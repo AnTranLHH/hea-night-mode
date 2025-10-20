@@ -3,6 +3,7 @@ Shader "Custom/URP_StencilWrite15"
     Properties
     {
         _Color("Color (if visible)", Color) = (1,1,1,1)
+        _WriteValue("Stencil Write Value", Range(0,255)) = 15
     }
 
     SubShader
@@ -26,7 +27,7 @@ Shader "Custom/URP_StencilWrite15"
             // Stencil block: writes Ref = 88 whenever this pass runs
             Stencil
             {
-                Ref 15
+                Ref [_WriteValue]
                 Comp Always   // always pass stencil test
                 Pass Replace  // replace stencil value with Ref
                 ReadMask 255
