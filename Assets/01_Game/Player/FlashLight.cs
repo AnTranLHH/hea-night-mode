@@ -9,6 +9,10 @@ public class FlashLight : MonoBehaviour
     [SerializeField]
     private FloatVariable _flashLightMaxDuration;
 
+    [Header("Reference - Write")]
+    [SerializeField]
+    private FloatVariable _flashLightRadius;
+
     [Header("Configs")]
     [SerializeField]
     private Vector2 _flashLightRange = new(2f, 10f);
@@ -28,6 +32,7 @@ public class FlashLight : MonoBehaviour
     private void AdjustFlashRadius(float duration)
     {
         float scale = MathUtils.Remap(duration, 0f, _flashLightMaxDuration.Value, _flashLightRange.x, _flashLightRange.y);
+        _flashLightRadius.Value = scale;
         _flashLight.transform.localScale = new(scale, scale, 1f);
     }
 }

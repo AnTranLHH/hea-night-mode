@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3Variable _holeTop;
     [SerializeField]
     private Vector3Variable _holeBot;
+    [SerializeField]
+    private Vector3Variable _refPos;
 
     [Header("Events out")]
     [SerializeField]
@@ -37,13 +39,24 @@ public class PlayerMovement : MonoBehaviour
     private Transform _top;
     [SerializeField]
     private Transform _bot;
+    [SerializeField]
+    private Transform _ref;
+    [SerializeField]
+    private Vector2 _horizontalBound;
+    [SerializeField]
+    private Vector2 _verticalBound;
 
     private void Update()
     {
-        _player.position += _direction.Value * _playerSpeed.Value * Time.deltaTime;
+        Vector3 nextPos = _player.position + _direction.Value * _playerSpeed.Value * Time.deltaTime;
+        nextPos.x = Mathf.Clamp(nextPos.x, _horizontalBound.x, _horizontalBound.y);
+        nextPos.z = Mathf.Clamp(nextPos.z, _verticalBound.x, _verticalBound.y);
+
+        _player.position = nextPos;
         _flashLightDuration.Value = Mathf.Max(0f, _flashLightDuration.Value - Time.deltaTime);
         _holeBot.Value = _bot.transform.position;
         _holeTop.Value = _top.transform.position;
+        _refPos.Value = _ref.position;
     }
 
     private void OnTriggerEnter(Collider other)

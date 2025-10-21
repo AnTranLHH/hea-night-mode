@@ -1,7 +1,9 @@
 using System;
 using DG.Tweening;
 using SoSystem;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Vacuumable : MonoBehaviour
 {
@@ -11,20 +13,25 @@ public class Vacuumable : MonoBehaviour
     [SerializeField]
     private Vector3Variable _holeBot;
 
+    public UnityEvent OnVacuumed;
+
     [Header("Configs")]
     [SerializeField]
     private Collider _collider;
     [SerializeField]
     private Transform _target;
     [SerializeField]
-    private int _store;
+    private int _score;
     [SerializeField]
     private float _vacuumeTime;
+    [SerializeField]
+    private VacuumeType _vacuumeType;
 
+    private Tweener _vacuumeTween;
 
     public int GetScore()
     {
-        return _store;
+        return _score;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -36,16 +43,29 @@ public class Vacuumable : MonoBehaviour
 
         BeVacuumed();
     }
-    
+
     private void BeVacuumed()
     {
         _collider.enabled = false;
 
+        if (_vacuumeType == VacuumeType.Ghost)
+        {
+            return;
+        }
+        
         Span<Vector3> path = stackalloc Vector3[3];
         path[0] = _target.transform.position;
         path[1] = _holeTop.Value;
         path[2] = _holeBot.Value;
         _target.transform.DOPath(path.ToArray(), _vacuumeTime, PathType.CatmullRom, PathMode.Full3D, 5);
         _target.transform.DOScale(0f, 1f);
+
+        OnVacuumed.Invoke();
     }
+}
+
+public enum VacuumeType
+{
+    Regular = 0,
+    Ghost = 1
 }
