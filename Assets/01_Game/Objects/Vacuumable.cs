@@ -12,10 +12,14 @@ public class Vacuumable : MonoBehaviour
     private Vector3Variable _holeTop;
     [SerializeField]
     private Vector3Variable _holeBot;
+    [SerializeField]
+    private IntegerVariable _playerLevel;
 
     public UnityEvent OnVacuumed;
 
     [Header("Configs")]
+    [SerializeField]
+    private int _level;
     [SerializeField]
     private Collider _collider;
     [SerializeField]
@@ -41,6 +45,11 @@ public class Vacuumable : MonoBehaviour
             return;
         }
 
+        if (_playerLevel.Value < _level)
+        {
+            return;
+        }
+
         BeVacuumed();
     }
 
@@ -52,7 +61,7 @@ public class Vacuumable : MonoBehaviour
         {
             return;
         }
-        
+
         Span<Vector3> path = stackalloc Vector3[3];
         path[0] = _target.transform.position;
         path[1] = _holeTop.Value;
